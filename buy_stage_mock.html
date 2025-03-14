@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sparky - Buy Stage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: white;
+            height: 100vh;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .header {
+            background-color: #0071dc;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .chat-container {
+            padding: 15px;
+            overflow-y: auto;
+            height: calc(100vh - 160px);
+        }
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            position: relative;
+            clear: both;
+        }
+        .user-message {
+            background-color: #e6f2ff;
+            float: right;
+            border-bottom-right-radius: 4px;
+        }
+        .bot-message {
+            background-color: #f0f0f0;
+            float: left;
+            border-bottom-left-radius: 4px;
+        }
+        .message-time {
+            font-size: 0.7em;
+            color: #888;
+            margin-top: 5px;
+            text-align: right;
+        }
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            width: 480px;
+            background-color: white;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            display: flex;
+        }
+        .input-box {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+        .send-button {
+            background-color: #0071dc;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        .bot-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #0071dc;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+            text-align: center;
+            color: white;
+            line-height: 30px;
+            font-weight: bold;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        /* Ad Components for Buy Stage */
+        .checkout-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .checkout-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .checkout-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background-color: #f0f7ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0071dc;
+            font-size: 1.2em;
+        }
+        .checkout-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            flex-grow: 1;
+        }
+        .product-summary {
+            display: flex;
+            align-items: center;
+            background-color: #f8f8f8;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .product-image-checkout {
+            width: 80px;
+            height: 80px;
+            background-color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: #888;
+        }
+        .product-details-checkout {
+            flex-grow: 1;
+        }
+        .product-name-checkout {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .product-price-checkout {
+            color: #0071dc;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .product-quantity {
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .checkout-options {
+            margin: 15px 0;
+        }
+        .checkout-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .checkout-option:hover {
+            border-color: #0071dc;
+            background-color: #f0f7ff;
+        }
+        .checkout-option.selected {
+            border-color: #0071dc;
+            background-color: #f0f7ff;
+        }
+        .option-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #f0f7ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: #0071dc;
+        }
+        .option-details {
+            flex-grow: 1;
+        }
+        .option-title {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        .option-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .option-price {
+            font-weight: bold;
+            color: #0071dc;
+        }
+        .checkout-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 15px;
+        }
+        .total-label {
+            font-weight: bold;
+        }
+        .total-amount {
+            font-weight: bold;
+            color: #0071dc;
+            font-size: 1.1em;
+        }
+        .checkout-button {
+            background-color: #0071dc;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px;
+            width: 100%;
+            font-weight: bold;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .checkout-button:hover {
+            background-color: #005bb8;
+        }
+        .sponsored-tag {
+            font-size: 0.7em;
+            color: #888;
+            margin-top: 10px;
+            display: block;
+            text-align: center;
+        }
+        .time-limited-offer {
+            background-color: #fff8e6;
+            border: 1px solid #ffe0a3;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+        }
+        .timer-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #ffb700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: white;
+            font-weight: bold;
+        }
+        .offer-content {
+            flex-grow: 1;
+        }
+        .offer-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .offer-description {
+            font-size: 0.9em;
+        }
+        .countdown {
+            font-weight: bold;
+            color: #d32f2f;
+        }
+        .cross-sell {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .cross-sell-header {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .cross-sell-products {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .cross-sell-product {
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .cross-sell-product:hover {
+            background-color: #f0f7ff;
+            border: 1px solid #cce5ff;
+        }
+        .cross-sell-image {
+            height: 80px;
+            background-color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            color: #888;
+        }
+        .cross-sell-name {
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .cross-sell-price {
+            color: #0071dc;
+            font-weight: bold;
+        }
+        .add-button {
+            background-color: #0071dc;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+        .confirmation-message {
+            background-color: #e6f4ea;
+            border: 1px solid #b7dfb9;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        .confirmation-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #34a853;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: white;
+            font-weight: bold;
+        }
+        .confirmation-content {
+            flex-grow: 1;
+        }
+        .confirmation-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .confirmation-details {
+            font-size: 0.9em;
+        }
+        .order-number {
+            font-weight: bold;
+            color: #0071dc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Sparky</h2>
+        </div>
+        <div class="chat-container">
+            <!-- Previous conversation context -->
+            <div class="message user-message">
+                I'd like to buy the Sony A95L OLED TV we were discussing.
+                <div class="message-time">4:15 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with checkout offer -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Great choice! I can help you order the Sony A95L OLED TV right away. Would you like to proceed with checkout?
+                <div class="message-time">4:15 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User confirms -->
+            <div class="message user-message">
+                Yes, let's check out
+                <div class="message-time">4:16 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with checkout information -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Perfect! I've prepared your order for the Sony A95L OLED TV. Here's your checkout summary:
+                <div class="message-time">4:16 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Time-limited promotional messaging (Buy Stage) -->
+            <div class="time-limited-offer">
+                <div class="timer-icon">⏱️</div>
+                <div class="offer-content">
+                    <div class="offer-title">Limited Time Offer!</div>
+                    <div class="offer-description">Free 2-day shipping if you complete checkout in the next <span class="countdown">10 minutes</span>. Plus, get a $50 Walmart gift card with your purchase!</div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Conversational commerce unit with integrated checkout (Buy Stage) -->
+            <div class="checkout-card">
+                <div class="checkout-header">
+                    <div class="checkout-icon">🛒</div>
+                    <div class="checkout-title">Express Checkout</div>
+                </div>
+                
+                <div class="product-summary">
+                    <div class="product-image-checkout">Sony A95L</div>
+                    <div class="product-details-checkout">
+                        <div class="product-name-checkout">Sony A95L 65" OLED TV</div>
+                        <div class="product-price-checkout">$2,499.99</div>
+                        <div class="product-quantity">Quantity: 1</div>
+                    </div>
+                </div>
+                
+                <div class="checkout-options">
+                    <div class="checkout-option selected">
+                        <div class="option-icon">🚚</div>
+                        <div class="option-details">
+                            <div class="option-title">2-Day Shipping</div>
+                            <div class="option-description">Get it by Wednesday, Mar 16</div>
+                        </div>
+                        <div class="option-price">FREE</div>
+                    </div>
+                    
+                    <div class="checkout-option">
+                        <div class="option-icon">🔧</div>
+                        <div class="option-details">
+                            <div class="option-title">Premium Setup Service</div>
+                            <div class="option-description">Professional installation and setup</div>
+                        </div>
+                        <div class="option-price">$99.99</div>
+                    </div>
+                    
+                    <div class="checkout-option">
+                        <div class="option-icon">🛡️</div>
+                        <div class="option-details">
+                            <div class="option-title">3-Year Protection Plan</div>
+                            <div class="option-description">Extended warranty with accident coverage</div>
+                        </div>
+                        <div class="option-price">$249.99</div>
+                    </div>
+                </div>
+                
+                <div class="checkout-total">
+                    <div class="total-label">Total</div>
+                    <div class="total-amount">$2,499.99</div>
+                </div>
+                
+                <button class="checkout-button">Complete Purchase</button>
+                <span class="sponsored-tag">Checkout experience by Sony</span>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Cross-sell suggestions framed as helpful advice (Buy Stage) -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Many people who buy this TV also get these accessories to enhance their viewing experience:
+                <div class="message-time">4:17 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <div class="cross-sell">
+                <div class="cross-sell-header">Recommended with your Sony A95L OLED TV:</div>
+                <div class="cross-sell-products">
+                    <div class="cross-sell-product">
+                        <div class="cross-sell-image">Sony Soundbar</div>
+                        <div class="cross-sell-name">Sony HT-A7000 Soundbar</div>
+                        <div class="cross-sell-price">$999.99 <span style="text-decoration: line-through; color: #888; font-size: 0.8em;">$1,199.99</span></div>
+                        <button class="add-button">Add to Order</button>
+                    </div>
+                    <div class="cross-sell-product">
+                        <div class="cross-sell-image">Wall Mount</div>
+                        <div class="cross-sell-name">MountPro Slim Wall Mount</div>
+                        <div class="cross-sell-price">$79.99</div>
+                        <button class="add-button">Add to Order</button>
+                    </div>
+                    <div class="cross-sell-product">
+                        <div class="cross-sell-image">HDMI Cable</div>
+                        <div class="cross-sell-name">Premium 8K HDMI 2.1 Cable</div>
+                        <div class="cross-sell-price">$29.99</div>
+                        <button class="add-button">Add to Order</button>
+                    </div>
+                    <div class="cross-sell-product">
+                        <div class="cross-sell-image">Streaming Device</div>
+                        <div class="cross-sell-name">Roku Ultra Streaming Box</div>
+                        <div class="cross-sell-price">$89.99</div>
+                        <button class="add-button">Add to Order</button>
+                    </div>
+                </div>
+                <span class="sponsored-tag">Recommendations by Sony and MountPro</span>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User adds an accessory -->
+            <div class="message user-message">
+                Add the wall mount to my order
+                <div class="message-time">4:18 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot confirms addition -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                I've added the MountPro Slim Wall Mount to your order. Your new total is $2,579.98. Would you like to complete your purchase now?
+                <div class="message-time">4:18 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User confirms purchase -->
+            <div class="message user-message">
+                Yes, complete my purchase
+                <div class="message-time">4:19 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Order confirmation message -->
+            <div class="confirmation-message">
+                <div class="confirmation-icon">✓</div>
+                <div class="confirmation-content">
+                    <div class="confirmation-title">Order Confirmed!</div>
+                    <div class="confirmation-details">
+                        Your order #WM12345678 has been placed successfully. You'll receive your Sony A95L OLED TV and MountPro Slim Wall Mount by Wednesday, Mar 16. A confirmation email has been sent to your registered email address.
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot follow-up message -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Thank you for your purchase! Your order has been confirmed, and you'll receive your items by Wednesday. You've also earned a $50 Walmart gift card which will be emailed to you within 24 hours. Is there anything else you'd like help with today?
+                <div class="message-time">4:19 PM</div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="input-area">
+            <input type="text" class="input-box" placeholder="Type your message...">
+            <button class="send-button">➤</button>
+        </div>
+    </div>
+</body>
+</html>

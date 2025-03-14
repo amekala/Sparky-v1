@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sparky - Conversational AI Shopping Companion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: white;
+            height: 100vh;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .header {
+            background-color: #0071dc;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .chat-container {
+            padding: 15px;
+            overflow-y: auto;
+            height: calc(100vh - 160px);
+        }
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            position: relative;
+            clear: both;
+        }
+        .user-message {
+            background-color: #e6f2ff;
+            float: right;
+            border-bottom-right-radius: 4px;
+        }
+        .bot-message {
+            background-color: #f0f0f0;
+            float: left;
+            border-bottom-left-radius: 4px;
+        }
+        .message-time {
+            font-size: 0.7em;
+            color: #888;
+            margin-top: 5px;
+            text-align: right;
+        }
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            width: 480px;
+            background-color: white;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            display: flex;
+        }
+        .input-box {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+        .send-button {
+            background-color: #0071dc;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        .bot-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #0071dc;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+            text-align: center;
+            color: white;
+            line-height: 30px;
+            font-weight: bold;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        
+        /* Innovative Ad Format: AI-Generated Comparison Cards */
+        .comparison-container {
+            margin: 15px 0;
+            position: relative;
+        }
+        .comparison-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .comparison-title {
+            font-weight: bold;
+            color: #333;
+        }
+        .comparison-sponsor {
+            font-size: 0.8em;
+            color: #666;
+            background-color: #f8f8f8;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+        .comparison-cards {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
+            padding: 5px 0;
+            scrollbar-width: thin;
+        }
+        .comparison-cards::-webkit-scrollbar {
+            height: 6px;
+        }
+        .comparison-cards::-webkit-scrollbar-thumb {
+            background-color: #ddd;
+            border-radius: 3px;
+        }
+        .comparison-card {
+            min-width: 200px;
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 12px;
+            position: relative;
+        }
+        .comparison-card.featured {
+            border-color: #cce5ff;
+            background-color: #f0f7ff;
+        }
+        .featured-badge {
+            position: absolute;
+            top: -8px;
+            right: 10px;
+            background-color: #0071dc;
+            color: white;
+            font-size: 0.7em;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        .card-image {
+            height: 100px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            color: #888;
+        }
+        .card-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .card-price {
+            color: #0071dc;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .card-features {
+            margin-bottom: 10px;
+        }
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 5px;
+            font-size: 0.85em;
+        }
+        .feature-icon {
+            color: #0071dc;
+            margin-right: 5px;
+            font-weight: bold;
+        }
+        .feature-text {
+            flex-grow: 1;
+        }
+        .highlight-feature {
+            background-color: #e6f2ff;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .card-action {
+            text-align: center;
+        }
+        .card-button {
+            background-color: #0071dc;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+        }
+        
+        /* Innovative Ad Format: Contextual Shopping Companion */
+        .shopping-companion {
+            position: fixed;
+            bottom: 80px;
+            right: 15px;
+            width: 50px;
+            height: 50px;
+            background-color: #0071dc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        .companion-expanded {
+            position: fixed;
+            bottom: 80px;
+            right: 15px;
+            width: 280px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            overflow: hidden;
+            display: none;
+        }
+        .companion-header {
+            background-color: #0071dc;
+            color: white;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .companion-title {
+            font-weight: bold;
+        }
+        .companion-close {
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .companion-content {
+            padding: 12px;
+        }
+        .companion-message {
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        .companion-products {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            scrollbar-width: none;
+        }
+        .companion-products::-webkit-scrollbar {
+            display: none;
+        }
+        .companion-product {
+            min-width: 120px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+        }
+        .companion-product-image {
+            height: 60px;
+            background-color: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5px;
+            color: #888;
+            font-size: 0.8em;
+        }
+        .companion-product-name {
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .companion-product-price {
+            font-size: 0.8em;
+            color: #0071dc;
+            font-weight: bold;
+        }
+        .companion-footer {
+            padding: 8px 12px;
+            background-color: #f8f8f8;
+            font-size: 0.7em;
+            color: #888;
+            text-align: center;
+        }
+        
+        /* Innovative Ad Format: Interactive Product Demos */
+        .interactive-demo {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .demo-header {
+            background-color: #f8f8f8;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .demo-title {
+            font-weight: bold;
+        }
+        .demo-sponsor {
+            font-size: 0.8em;
+            color: #666;
+            background-color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+        .demo-content {
+            position: relative;
+            height: 250px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .demo-product {
+            width: 200px;
+            height: 200px;
+            background-color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+        }
+        .demo-hotspots {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .demo-hotspot {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background-color: #0071dc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .hotspot-1 {
+            top: 30%;
+            left: 30%;
+        }
+        .hotspot-2 {
+            top: 60%;
+            left: 40%;
+        }
+        .hotspot-3 {
+            top: 40%;
+            left: 70%;
+        }
+        .hotspot-tooltip {
+            position: absolute;
+            width: 150px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            font-size: 0.8em;
+            z-index: 10;
+            display: none;
+        }
+        .tooltip-1 {
+            top: 20%;
+            left: 35%;
+        }
+        .tooltip-2 {
+            top: 65%;
+            left: 45%;
+        }
+        .tooltip-3 {
+            top: 35%;
+            left: 75%;
+        }
+        .demo-hotspot:hover + .hotspot-tooltip {
+            display: block;
+        }
+        .demo-controls {
+            display: flex;
+            padding: 12px;
+            gap: 10px;
+        }
+        .demo-control {
+            flex-grow: 1;
+            padding: 8px;
+            text-align: center;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+        .demo-control.active {
+            background-color: #e6f2ff;
+            color: #0071dc;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Sparky</h2>
+        </div>
+        <div class="chat-container">
+            <!-- User question -->
+            <div class="message user-message">
+                I'm looking for a coffee maker that makes both single cups and full pots
+                <div class="message-time">2:15 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Dual coffee makers that can brew both single cups and full carafes are a great solution for flexible brewing. These machines typically have two separate brewing systems in one unit. Let me show you some popular options that might work for you.
+                <div class="message-time">2:15 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Innovative Ad Format: AI-Generated Comparison Cards -->
+            <div class="comparison-container">
+                <div class="comparison-header">
+                    <div class="comparison-title">Dual Brew Coffee Makers</div>
+                    <div class="comparison-sponsor">Sponsored by Hamilton Beach</div>
+                </div>
+                <div class="comparison-cards">
+                    <div class="comparison-card featured">
+                        <div class="featured-badge">Best Value</div>
+                        <div class="card-image">Hamilton Beach FlexBrew</div>
+                        <div class="card-title">Hamilton Beach FlexBrew</div>
+                        <div class="card-price">$89.99</div>
+                        <div class="card-features">
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text"><span class="highlight-feature">2-way brewing</span> (single cup & carafe)</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Compatible with K-Cups & ground coffee</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Programmable timer</div>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button class="card-button">View Details</button>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-card">
+                        <div class="card-image">Ninja DualBrew</div>
+                        <div class="card-title">Ninja DualBrew Pro</div>
+                        <div class="card-price">$199.99</div>
+                        <div class="card-features">
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">9 brew sizes (cup to carafe)</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">4 brew styles (classic to over ice)</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Built-in frother</div>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button class="card-button">View Details</button>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-card">
+                        <div class="card-image">Keurig K-Duo</div>
+                        <div class="card-title">Keurig K-Duo Plus</div>
+                        <div class="card-price">$229.99</div>
+                        <div class="card-features">
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Multiple cup & carafe sizes</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Strong brew option</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Thermal carafe</div>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button class="card-button">View Details</button>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-card">
+                        <div class="card-image">Cuisinart SS-20</div>
+                        <div class="card-title">Cuisinart SS-20</div>
+                        <div class="card-price">$249.95</div>
+                        <div class="card-features">
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">10-cup thermal carafe</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">3 brew sizes for single cup</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">✓</div>
+                                <div class="feature-text">Charcoal water filter</div>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button class="card-button">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User follow-up -->
+            <div class="message user-message">
+                Tell me more about the Hamilton Beach FlexBrew
+                <div class="message-time">2:16 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                The Hamilton Beach FlexBrew is a versatile coffee maker that offers good value for its price point. Here are more details about it:
+                
+                • It has a 12-cup glass carafe on one side and a single-serve brewer on the other
+                • The single-serve side works with both K-Cup pods and ground coffee (with included reusable filter)
+                • Features programmable timer, auto-shutoff, and brew strength selector
+                • Separate water reservoirs for each brewing side
+                • Dimensions: 13.7" H x 12.2" W x 11.4" D (fits under most cabinets)
+                • 1-year warranty
+                
+                Many users appreciate its flexibility and reasonable price compared to other dual brewers on the market.
+                <div class="message-time">2:16 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Innovative Ad Format: Interactive Product Demo -->
+            <div class="interactive-demo">
+                <div class="demo-header">
+                    <div class="demo-title">Hamilton Beach FlexBrew Interactive Demo</div>
+                    <div class="demo-sponsor">Sponsored</div>
+                </div>
+                <div class="demo-content">
+                    <div class="demo-product">Hamilton Beach FlexBrew</div>
+                    <div class="demo-hotspots">
+                        <div class="demo-hotspot hotspot-1">1</div>
+                        <div class="hotspot-tooltip tooltip-1">
+                            <strong>Single-Serve Side</strong><br>
+                            Compatible with K-Cup pods or ground coffee using the included reusable filter
+                        </div>
+                        
+                        <div class="demo-hotspot hotspot-2">2</div>
+                        <div class="hotspot-tooltip tooltip-2">
+                            <strong>Carafe Side</strong><br>
+                            Brews up to 12 cups with programmable timer and auto-shutoff
+                        </div>
+                        
+                        <div class="demo-hotspot hotspot-3">3</div>
+                        <div class="hotspot-tooltip tooltip-3">
+                            <strong>Control Panel</strong><br>
+                            Easy-to-use buttons for brew strength, programming, and brewing options
+                        </div>
+                    </div>
+                </div>
+                <div class="demo-controls">
+                    <div class="demo-control active">Product View</div>
+                    <div class="demo-control">How It Works</div>
+                    <div class="demo-control">Features</div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User question about alternatives -->
+            <div class="message user-message">
+                Are there any alternatives that take up less counter space?
+                <div class="message-time">2:17 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Yes, if counter space is a concern, there are more compact dual coffee makers available. The Keurig K-Duo Essentials is slimmer than the Plus model I mentioned earlier. The Hamilton Beach 2-Way FlexBrew also comes in a more compact model that's about 10% smaller than the standard version.
+                
+                Another space-saving option is the Cuisinart SS-15, which has a smaller footprint than the SS-20 while still offering both single-cup and carafe brewing capabilities.
+                
+                Would you like me to show you these more compact options?
+                <div class="message-time">2:17 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Innovative Ad Format: Contextual Shopping Companion -->
+            <div class="shopping-companion">S</div>
+            
+            <div class="companion-expanded">
+                <div class="companion-header">
+                    <div class="companion-title">Shopping Assistant</div>
+                    <div class="companion-close">×</div>
+                </div>
+                <div class="companion-content">
+                    <div class="companion-message">
+                        <strong>Looking for space-saving coffee makers?</strong><br>
+                        Here are some compact options that might work for your kitchen:
+                    </div>
+                    <div class="companion-products">
+                        <div class="companion-product">
+                            <div class="companion-product-image">Hamilton Beach</div>
+                            <div class="companion-product-name">Hamilton Beach Compact FlexBrew</div>
+                            <div class="companion-product-price">$79.99</div>
+                        </div>
+                        <div class="companion-product">
+                            <div class="companion-product-image">Keurig</div>
+                            <div class="companion-product-name">Keurig K-Duo Essentials</div>
+                            <div class="companion-product-price">$129.99</div>
+                        </div>
+                        <div class="companion-product">
+                            <div class="companion-product-image">Cuisinart</div>
+                            <div class="companion-product-name">Cuisinart SS-15P1</div>
+                            <div class="companion-product-price">$199.95</div>
+                        </div>
+                    </div>
+                    <div class="companion-message">
+                        <strong>Tip:</strong> Measure your counter space before purchasing. Most compact models are under 11" wide.
+                    </div>
+                </div>
+                <div class="companion-footer">
+                    Sponsored recommendations by Hamilton Beach
+                </div>
+            </div>
+        </div>
+        <div class="input-area">
+            <input type="text" class="input-box" placeholder="Type your message...">
+            <button class="send-button">➤</button>
+        </div>
+    </div>
+    
+    <script>
+        // Simple script to toggle the companion expanded view
+        document.querySelector('.shopping-companion').addEventListener('click', function() {
+            document.querySelector('.companion-expanded').style.display = 'block';
+            this.style.display = 'none';
+        });
+        
+        document.querySelector('.companion-close').addEventListener('click', function() {
+            document.querySelector('.companion-expanded').style.display = 'none';
+            document.querySelector('.shopping-companion').style.display = 'flex';
+        });
+    </script>
+</body>
+</html>

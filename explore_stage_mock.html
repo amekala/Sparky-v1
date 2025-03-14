@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sparky - Explore Stage</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <div class="container">
+        <header class="header">
+            <button onclick="window.location.href='index.html'" class="back-button" aria-label="Back to home">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2>Sparky - Explore Stage</h2>
+        </header>
+        
+        <nav class="site-nav" aria-label="Main navigation">
+            <ul class="nav-list">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="explore_stage_mock.html" class="nav-link active">Explore</a></li>
+                <li class="nav-item"><a href="learn_stage_mock.html" class="nav-link">Learn</a></li>
+                <li class="nav-item"><a href="evaluate_stage_mock.html" class="nav-link">Evaluate</a></li>
+                <li class="nav-item"><a href="buy_stage_mock.html" class="nav-link">Buy</a></li>
+                <li class="nav-item"><a href="post_transaction_stage_mock.html" class="nav-link">Post-Purchase</a></li>
+            </ul>
+        </nav>
+        
+        <main id="main-content" class="chat-container">
+            <!-- Initial greeting -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Hi there! I'm Sparky, your Walmart shopping assistant. How can I help you today?
+                <div class="message-time">10:30 AM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Sponsored conversation starters (Explore Stage) -->
+            <div class="sponsored-prompts">
+                <div class="sponsored-prompt" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to ask about gift ideas">
+                    <span>Looking for gift ideas? 🎁</span>
+                    <span class="sponsored-tag">Sponsored by Hallmark</span>
+                </div>
+                <div class="sponsored-prompt" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to explore summer essentials">
+                    <span>Summer essentials? ☀️</span>
+                    <span class="sponsored-tag">Sponsored by Coleman</span>
+                </div>
+                <div class="sponsored-prompt" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to discover kitchen gadgets">
+                    <span>Kitchen gadget ideas? 🍳</span>
+                    <span class="sponsored-tag">Sponsored by KitchenAid</span>
+                </div>
+                <div class="sponsored-prompt" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to find beauty trends">
+                    <span>Beauty trends 2023? 💄</span>
+                    <span class="sponsored-tag">Sponsored by L'Oreal</span>
+                </div>
+            </div>
+            
+            <!-- User message -->
+            <div class="message user-message">
+                I'm looking for some summer outfit ideas
+                <div class="message-time">10:31 AM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with branded collection -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Great choice! Summer is here and it's the perfect time to refresh your wardrobe. Here are some trending summer outfit ideas:
+                <div class="message-time">10:31 AM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Branded collection (Explore Stage) -->
+            <div class="sponsored-collection" role="region" aria-label="Summer outfit collection sponsored by Old Navy">
+                <div class="collection-header">
+                    <div class="brand-logo">ON</div>
+                    <div class="collection-title">Summer Essentials</div>
+                    <span class="sponsored-tag">Sponsored by Old Navy</span>
+                </div>
+                <p>Beat the heat with these trending summer outfits:</p>
+                <div class="product-grid">
+                    <div class="product-item" tabindex="0" aria-label="Linen-Blend Shorts: $24.99">
+                        <div class="product-image">
+                            <i class="fas fa-tshirt fa-2x"></i>
+                        </div>
+                        <div class="product-name">Linen-Blend Shorts</div>
+                        <div class="product-price">$24.99</div>
+                    </div>
+                    <div class="product-item" tabindex="0" aria-label="Printed Resort Shirt: $29.99">
+                        <div class="product-image">
+                            <i class="fas fa-tshirt fa-2x"></i>
+                        </div>
+                        <div class="product-name">Printed Resort Shirt</div>
+                        <div class="product-price">$29.99</div>
+                    </div>
+                    <div class="product-item" tabindex="0" aria-label="Breathable Tank Top: $12.99">
+                        <div class="product-image">
+                            <i class="fas fa-tshirt fa-2x"></i>
+                        </div>
+                        <div class="product-name">Breathable Tank Top</div>
+                        <div class="product-price">$12.99</div>
+                    </div>
+                    <div class="product-item" tabindex="0" aria-label="Slim Fit Chino Pants: $34.99">
+                        <div class="product-image">
+                            <i class="fas fa-tshirt fa-2x"></i>
+                        </div>
+                        <div class="product-name">Slim Fit Chino Pants</div>
+                        <div class="product-price">$34.99</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bot continued response -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Would you like me to suggest some complete outfit combinations or are you looking for specific items?
+                <div class="message-time">10:32 AM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User message -->
+            <div class="message user-message">
+                Complete outfits would be great!
+                <div class="message-time">10:33 AM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with trending list -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Here are some trending summer outfit combinations that our customers love:
+                <div class="message-time">10:34 AM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Trending list (Explore Stage) -->
+            <div class="trending-list" role="region" aria-label="Trending summer outfit combinations">
+                <div class="trending-header">
+                    <span class="trending-icon"><i class="fas fa-fire"></i></span>
+                    Trending Summer Outfit Combinations
+                </div>
+                <div class="trending-item" tabindex="0">
+                    <div class="trending-number">1</div>
+                    <div class="trending-text">Linen shorts + graphic tee + canvas sneakers</div>
+                </div>
+                <div class="trending-item" tabindex="0">
+                    <div class="trending-number">2</div>
+                    <div class="trending-text">Flowy sundress + straw hat + sandals</div>
+                </div>
+                <div class="trending-item" tabindex="0">
+                    <div class="trending-number">3</div>
+                    <div class="trending-text">Lightweight chinos + short-sleeve button-up + loafers</div>
+                </div>
+                <div class="trending-item" tabindex="0">
+                    <div class="trending-number">4</div>
+                    <div class="trending-text">Maxi skirt + crop top + wedge heels</div>
+                </div>
+                <div class="trending-item" tabindex="0">
+                    <div class="trending-number">5</div>
+                    <div class="trending-text">Swim trunks + resort shirt + flip flops</div>
+                </div>
+                <span class="sponsored-tag">Curated with Stitch Fix</span>
+            </div>
+            
+            <!-- Input area -->
+            <div class="input-area">
+                <input type="text" class="input-box" placeholder="Type your message..." aria-label="Type your message">
+                <button class="send-button" aria-label="Send message">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/script.js"></script>
+</body>
+</html>

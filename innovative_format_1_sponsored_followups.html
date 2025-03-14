@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sparky - Contextual Follow-Up Questions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: white;
+            height: 100vh;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .header {
+            background-color: #0071dc;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .chat-container {
+            padding: 15px;
+            overflow-y: auto;
+            height: calc(100vh - 160px);
+        }
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            position: relative;
+            clear: both;
+        }
+        .user-message {
+            background-color: #e6f2ff;
+            float: right;
+            border-bottom-right-radius: 4px;
+        }
+        .bot-message {
+            background-color: #f0f0f0;
+            float: left;
+            border-bottom-left-radius: 4px;
+        }
+        .message-time {
+            font-size: 0.7em;
+            color: #888;
+            margin-top: 5px;
+            text-align: right;
+        }
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            width: 480px;
+            background-color: white;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            display: flex;
+        }
+        .input-box {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+        .send-button {
+            background-color: #0071dc;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        .bot-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #0071dc;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+            text-align: center;
+            color: white;
+            line-height: 30px;
+            font-weight: bold;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        
+        /* Innovative Ad Format: Sponsored Follow-Up Questions (Perplexity-inspired) */
+        .follow-up-container {
+            margin: 15px 0;
+            padding-bottom: 10px;
+        }
+        .follow-up-label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #555;
+            font-size: 0.9em;
+        }
+        .follow-up-questions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .follow-up-question {
+            background-color: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            max-width: fit-content;
+        }
+        .follow-up-question:hover {
+            background-color: #f0f0f0;
+            border-color: #ccc;
+        }
+        .follow-up-question.sponsored {
+            background-color: #f0f7ff;
+            border-color: #cce5ff;
+        }
+        .follow-up-question.sponsored:hover {
+            background-color: #e6f2ff;
+            border-color: #b3d7ff;
+        }
+        .sponsored-indicator {
+            display: inline-block;
+            font-size: 0.7em;
+            color: #0071dc;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+        
+        /* Innovative Ad Format: Side Panel Ads (Perplexity-inspired) */
+        .side-panel-ad {
+            background-color: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 12px;
+            margin: 15px 0;
+            position: relative;
+        }
+        .ad-label {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: rgba(255,255,255,0.8);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            color: #666;
+        }
+        .ad-content {
+            display: flex;
+            align-items: center;
+        }
+        .ad-image {
+            width: 80px;
+            height: 80px;
+            background-color: white;
+            border-radius: 8px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+        }
+        .ad-details {
+            flex-grow: 1;
+        }
+        .ad-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .ad-description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .ad-cta {
+            display: inline-block;
+            background-color: #0071dc;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        /* Innovative Ad Format: Inline Product Mentions (Google AI Overview-inspired) */
+        .inline-product-mention {
+            display: inline-block;
+            background-color: #f0f7ff;
+            border-radius: 4px;
+            padding: 0 4px;
+            border-bottom: 1px dashed #0071dc;
+            position: relative;
+            cursor: pointer;
+        }
+        .inline-product-mention:hover {
+            background-color: #e6f2ff;
+        }
+        .product-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+            display: none;
+        }
+        .inline-product-mention:hover .product-tooltip {
+            display: block;
+        }
+        .tooltip-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .tooltip-image {
+            width: 40px;
+            height: 40px;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+            margin-right: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 0.7em;
+        }
+        .tooltip-title {
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .tooltip-price {
+            color: #0071dc;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        .tooltip-description {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .tooltip-cta {
+            display: inline-block;
+            background-color: #0071dc;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .tooltip-sponsored {
+            font-size: 0.7em;
+            color: #888;
+            text-align: right;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Sparky</h2>
+        </div>
+        <div class="chat-container">
+            <!-- User question -->
+            <div class="message user-message">
+                I need a good blender for making smoothies and protein shakes
+                <div class="message-time">11:30 AM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with inline product mentions -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                For smoothies and protein shakes, you'll want a blender with at least 600 watts of power and durable blades. The <span class="inline-product-mention">Ninja Professional Blender<div class="product-tooltip">
+                    <div class="tooltip-header">
+                        <div class="tooltip-image">Ninja</div>
+                        <div class="tooltip-title">Ninja Professional Blender</div>
+                    </div>
+                    <div class="tooltip-price">$89.99</div>
+                    <div class="tooltip-description">1000W motor, 72oz pitcher, Total Crushing Technology</div>
+                    <a href="#" class="tooltip-cta">View Details</a>
+                    <div class="tooltip-sponsored">Sponsored</div>
+                </div></span> is popular for its powerful motor and large capacity. Other good options include the <span class="inline-product-mention">Vitamix E310<div class="product-tooltip">
+                    <div class="tooltip-header">
+                        <div class="tooltip-image">Vitamix</div>
+                        <div class="tooltip-title">Vitamix E310 Explorian</div>
+                    </div>
+                    <div class="tooltip-price">$349.95</div>
+                    <div class="tooltip-description">48oz container, Variable Speed Control, Pulse Feature</div>
+                    <a href="#" class="tooltip-cta">View Details</a>
+                    <div class="tooltip-sponsored">Sponsored</div>
+                </div></span> if you're looking for professional quality, or the <span class="inline-product-mention">NutriBullet Pro<div class="product-tooltip">
+                    <div class="tooltip-header">
+                        <div class="tooltip-image">NutriBullet</div>
+                        <div class="tooltip-title">NutriBullet Pro</div>
+                    </div>
+                    <div class="tooltip-price">$79.99</div>
+                    <div class="tooltip-description">900W motor, 32oz cup, Nutrient Extraction Blades</div>
+                    <a href="#" class="tooltip-cta">View Details</a>
+                    <div class="tooltip-sponsored">Sponsored</div>
+                </div></span> for a more compact option.
+                <div class="message-time">11:30 AM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Sponsored Follow-Up Questions (Perplexity-inspired) -->
+            <div class="follow-up-container">
+                <div class="follow-up-label">Follow-up questions:</div>
+                <div class="follow-up-questions">
+                    <div class="follow-up-question">What's the difference between a blender and a food processor?</div>
+                    <div class="follow-up-question">Are glass blenders better than plastic?</div>
+                    <div class="follow-up-question sponsored">What makes Ninja blenders stand out? <span class="sponsored-indicator">Ad</span></div>
+                    <div class="follow-up-question">How much should I spend on a good blender?</div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User selects sponsored follow-up -->
+            <div class="message user-message">
+                What makes Ninja blenders stand out?
+                <div class="message-time">11:31 AM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with side panel ad -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Ninja blenders stand out for several key features:
+                
+                1. Total Crushing Technology that pulverizes ice, frozen fruits, and vegetables in seconds
+                2. Multiple power settings and preset programs for different recipes
+                3. Versatile attachments like personal cups and food processor bowls on some models
+                4. Dishwasher-safe parts for easy cleaning
+                5. Competitive pricing compared to other high-performance blenders
+                
+                Many users particularly appreciate the power-to-price ratio of Ninja blenders, as they offer professional-level performance at a more accessible price point than some premium brands.
+                <div class="message-time">11:31 AM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Side Panel Ad (Perplexity-inspired) -->
+            <div class="side-panel-ad">
+                <div class="ad-label">Sponsored</div>
+                <div class="ad-content">
+                    <div class="ad-image">Ninja</div>
+                    <div class="ad-details">
+                        <div class="ad-title">Ninja Professional Plus Blender</div>
+                        <div class="ad-description">Auto-iQ Programs, 1400-Peak-Watt Motor, 72oz Pitcher</div>
+                        <a href="#" class="ad-cta">Shop Now - $99.99</a>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User asks another question -->
+            <div class="message user-message">
+                Which blender is best for crushing ice?
+                <div class="message-time">11:32 AM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with more follow-up questions -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                For crushing ice, you'll want a blender with high wattage (1000+ watts) and specially designed blades. The Ninja Professional series excels at ice crushing with its Total Crushing Technology. The Vitamix series is also excellent but at a higher price point. Blendtec models are known for their powerful motors that easily pulverize ice. If you're on a budget, the KitchenAid K400 offers good ice-crushing performance at a mid-range price.
+                <div class="message-time">11:32 AM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- More Sponsored Follow-Up Questions -->
+            <div class="follow-up-container">
+                <div class="follow-up-label">Follow-up questions:</div>
+                <div class="follow-up-questions">
+                    <div class="follow-up-question">How often should I replace blender blades?</div>
+                    <div class="follow-up-question sponsored">See Ninja's ice crushing demonstration <span class="sponsored-indicator">Ad</span></div>
+                    <div class="follow-up-question">What's the best way to clean a blender?</div>
+                    <div class="follow-up-question">Are more expensive blenders worth it?</div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User asks about another brand -->
+            <div class="message user-message">
+                What about Vitamix blenders? Are they worth the price?
+                <div class="message-time">11:33 AM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with comparison -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Vitamix blenders are considered premium products and come with a higher price tag (typically $300-$600). They're worth the investment if you:
+                
+                1. Use your blender daily or multiple times per day
+                2. Need exceptional durability (they're built to last 7-10+ years)
+                3. Want the smoothest possible texture for smoothies and purees
+                4. Value the ability to make hot soups directly in the blender
+                5. Appreciate the comprehensive 7-10 year warranty
+                
+                While Ninja offers great performance at a lower price point, Vitamix generally provides superior build quality, longer lifespan, and more consistent results, especially for challenging ingredients.
+                <div class="message-time">11:33 AM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Follow-up questions with multiple sponsored options -->
+            <div class="follow-up-container">
+                <div class="follow-up-label">Follow-up questions:</div>
+                <div class="follow-up-questions">
+                    <div class="follow-up-question">Which Vitamix model is best for beginners?</div>
+                    <div class="follow-up-question sponsored">Explore Ninja's 2025 blender lineup <span class="sponsored-indicator">Ad</span></div>
+                    <div class="follow-up-question">Can blenders be repaired if they break?</div>
+                    <div class="follow-up-question sponsored">Compare Vitamix vs Ninja side-by-side <span class="sponsored-indicator">Ad</span></div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="input-area">
+            <input type="text" class="input-box" placeholder="Type your message...">
+            <button class="send-button">➤</button>
+        </div>
+    </div>
+</body>
+</html>

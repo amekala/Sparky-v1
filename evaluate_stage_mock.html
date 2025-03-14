@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sparky - Evaluate Stage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: white;
+            height: 100vh;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .header {
+            background-color: #0071dc;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .chat-container {
+            padding: 15px;
+            overflow-y: auto;
+            height: calc(100vh - 160px);
+        }
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            position: relative;
+            clear: both;
+        }
+        .user-message {
+            background-color: #e6f2ff;
+            float: right;
+            border-bottom-right-radius: 4px;
+        }
+        .bot-message {
+            background-color: #f0f0f0;
+            float: left;
+            border-bottom-left-radius: 4px;
+        }
+        .message-time {
+            font-size: 0.7em;
+            color: #888;
+            margin-top: 5px;
+            text-align: right;
+        }
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            width: 480px;
+            background-color: white;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            display: flex;
+        }
+        .input-box {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+        .send-button {
+            background-color: #0071dc;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        .bot-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #0071dc;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+            text-align: center;
+            color: white;
+            line-height: 30px;
+            font-weight: bold;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        /* Ad Components for Evaluate Stage */
+        .comparison-offer {
+            background-color: #f0f7ff;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #cce5ff;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .offer-icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+            color: #0071dc;
+        }
+        .offer-text {
+            flex-grow: 1;
+        }
+        .offer-action {
+            background-color: #0071dc;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .sponsored-tag {
+            font-size: 0.7em;
+            color: #888;
+            margin-top: 5px;
+            display: block;
+        }
+        .comparison-table {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .table-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .table-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background-color: #f0f7ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0071dc;
+            font-size: 1.2em;
+        }
+        .table-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            flex-grow: 1;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+        th {
+            background-color: #f8f8f8;
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .highlighted-row {
+            background-color: #f0f7ff;
+        }
+        .check-icon {
+            color: #0071dc;
+            font-weight: bold;
+        }
+        .x-icon {
+            color: #888;
+        }
+        .price-cell {
+            font-weight: bold;
+            color: #0071dc;
+        }
+        .buy-button {
+            background-color: #0071dc;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .side-by-side {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .side-header {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .product-column {
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .product-column.highlighted {
+            background-color: #f0f7ff;
+            border: 1px solid #cce5ff;
+        }
+        .product-image-small {
+            height: 100px;
+            background-color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            color: #888;
+        }
+        .product-name-small {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .product-price-small {
+            color: #0071dc;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .feature-list {
+            margin-bottom: 15px;
+        }
+        .feature-item-small {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        .feature-check {
+            color: #0071dc;
+            margin-right: 5px;
+        }
+        .feature-text-small {
+            font-size: 0.9em;
+        }
+        .expert-recommendation {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .expert-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .expert-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background-color: #f0f7ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0071dc;
+            font-size: 1.2em;
+        }
+        .expert-title {
+            font-weight: bold;
+            flex-grow: 1;
+        }
+        .expert-content {
+            margin-bottom: 15px;
+        }
+        .expert-product {
+            display: flex;
+            align-items: center;
+            background-color: #f0f7ff;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .expert-product-image {
+            width: 60px;
+            height: 60px;
+            background-color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: #888;
+        }
+        .expert-product-details {
+            flex-grow: 1;
+        }
+        .expert-product-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .expert-product-price {
+            color: #0071dc;
+            font-weight: bold;
+        }
+        .special-offer {
+            background-color: #fff8e6;
+            border: 1px solid #ffe0a3;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .offer-badge {
+            background-color: #ffb700;
+            color: white;
+            padding: 5px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .offer-details {
+            flex-grow: 1;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Sparky</h2>
+        </div>
+        <div class="chat-container">
+            <!-- Previous conversation context -->
+            <div class="message user-message">
+                I'm trying to decide between the Samsung S95C, Sony A95L, and LG C3 OLED TVs for my living room.
+                <div class="message-time">3:45 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with initial information -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Those are all excellent OLED TV choices! Each has its strengths depending on what you value most in your viewing experience. Would you like me to compare them for you?
+                <div class="message-time">3:45 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Comparison offer (Evaluate Stage) -->
+            <div class="comparison-offer">
+                <div class="offer-icon">📊</div>
+                <div class="offer-text">I can compare those 3 OLED TVs for you</div>
+                <div class="offer-action">Compare Now</div>
+                <span class="sponsored-tag">Sponsored by Sony</span>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User accepts comparison -->
+            <div class="message user-message">
+                Yes, please compare them
+                <div class="message-time">3:46 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with comparison introduction -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Here's a detailed comparison of the Samsung S95C, Sony A95L, and LG C3 OLED TVs based on key features that matter most to viewers:
+                <div class="message-time">3:46 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Sponsored comparison chart (Evaluate Stage) -->
+            <div class="comparison-table">
+                <div class="table-header">
+                    <div class="table-icon">📊</div>
+                    <div class="table-title">OLED TV Comparison</div>
+                </div>
+                <table>
+                    <tr>
+                        <th>Features</th>
+                        <th>Samsung S95C</th>
+                        <th>Sony A95L</th>
+                        <th>LG C3</th>
+                    </tr>
+                    <tr>
+                        <td>Screen Size</td>
+                        <td>55", 65", 77"</td>
+                        <td>55", 65", 77"</td>
+                        <td>42" to 83"</td>
+                    </tr>
+                    <tr class="highlighted-row">
+                        <td>Picture Quality</td>
+                        <td>Excellent</td>
+                        <td>Superior</td>
+                        <td>Very Good</td>
+                    </tr>
+                    <tr>
+                        <td>HDR Performance</td>
+                        <td>HDR10+</td>
+                        <td>Dolby Vision</td>
+                        <td>Dolby Vision</td>
+                    </tr>
+                    <tr class="highlighted-row">
+                        <td>Motion Clarity</td>
+                        <td>Good</td>
+                        <td>Outstanding</td>
+                        <td>Good</td>
+                    </tr>
+                    <tr>
+                        <td>Gaming Features</td>
+                        <td><span class="check-icon">✓</span></td>
+                        <td><span class="check-icon">✓</span></td>
+                        <td><span class="check-icon">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Sound Quality</td>
+                        <td>Good</td>
+                        <td>Excellent</td>
+                        <td>Average</td>
+                    </tr>
+                    <tr>
+                        <td>Starting Price</td>
+                        <td class="price-cell">$1,999</td>
+                        <td class="price-cell">$2,499</td>
+                        <td class="price-cell">$1,599</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><button class="buy-button">View Details</button></td>
+                        <td><button class="buy-button">View Details</button></td>
+                        <td><button class="buy-button">View Details</button></td>
+                    </tr>
+                </table>
+                <span class="sponsored-tag">Comparison sponsored by Sony</span>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot provides additional context -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Based on your living room setup, you might want to focus on picture quality and motion clarity, which are especially important for mixed usage like movies, sports, and gaming.
+                <div class="message-time">3:47 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Decision support with brand integration (Evaluate Stage) -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Many home theater enthusiasts prefer the Sony A95L OLED for its superior motion clarity and color accuracy, which makes it excellent for both sports and cinematic content.
+                <div class="message-time">3:47 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User asks for more specific comparison -->
+            <div class="message user-message">
+                Can you show me the key differences between the Sony and Samsung models side by side?
+                <div class="message-time">3:48 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with side-by-side comparison -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Here's a side-by-side comparison focusing on the key differences between the Sony A95L and Samsung S95C:
+                <div class="message-time">3:48 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Side-by-side feature highlights with sponsored option (Evaluate Stage) -->
+            <div class="side-by-side">
+                <div class="side-header">Sony A95L vs Samsung S95C: Key Differences</div>
+                <div class="comparison-grid">
+                    <div class="product-column highlighted">
+                        <div class="product-image-small">Sony A95L OLED</div>
+                        <div class="product-name-small">Sony A95L OLED</div>
+                        <div class="product-price-small">$2,499</div>
+                        <div class="feature-list">
+                            <div class="feature-item-small">
+                                <div class="feature-check">✓</div>
+                                <div class="feature-text-small">QD-OLED with 200% brightness vs standard OLED</div>
+                            </div>
+                            <div class="feature-item-small">
+                                <div class="feature-check">✓</div>
+                                <div class="feature-text-small">Superior motion processing with XR processor</div>
+                            </div>
+                            <div class="feature-item-small">
+                                <div class="feature-check">✓</div>
+                                <div class="feature-text-small">Acoustic Surface Audio+ (screen is the speaker)</div>
+                            </div>
+                            <div class="feature-item-small">
+                                <div class="feature-check">✓</div>
+                                <div class="feature-text-small">Netflix Adaptive Calibrated Mode</div>
+                            </div>
+                            <div class="feature-item-small">
+                                <div class="feature-check">✓</div>
+                                <div class="feature-text-small">IMAX Enhanced certification</div>
+                            </div>
+                        </div>
+                        <button class="buy-button">View Details</button>
+                    </div>
+                    <div class="product-column">
+                        <div class="product-image-small">Samsung S95C</div>
+                        <div class="product-name-small">Samsung S95C OLED</div>
+                        <div class="product-price-small">$1,999</div>
+                        <div class="feature-list">
+                            <div class="feature-item-small">
+                                <div class="feature-check">✓</div>
+                                <div class="feature-text-small">QD-OLED with enhanced brightness</div>
+                            </div>
+                            <div class="feature-item-small">
+                                <div class="feature-check">✓</div>
+                                <div class="feature-text-small">One Connect Box for clean setup</div>
+                            </div>
+                            <div class="feature-item-small">
+                                <div class="feature-check">✓</div>
+                                <div class="feature-text-small">Q-Symphony sound with compatible soundbars</div>
+                            </div>
+                            <div class="feature-item-small">
+                                <div class="feature-check">✓</div>
+                                <div class="feature-text-small">Gaming Hub with cloud gaming</div>
+                            </div>
+                            <div class="feature-item-small">
+                                <div class="feature-check">✓</div>
+                                <div class="feature-text-small">Multi View split screen capability</div>
+                            </div>
+                        </div>
+                        <button class="buy-button">View Details</button>
+                    </div>
+                </div>
+                <span class="sponsored-tag">Comparison sponsored by Sony</span>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User asks for expert opinion -->
+            <div class="message user-message">
+                What do experts recommend for watching mostly movies and sports?
+                <div class="message-time">3:49 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with expert recommendation -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                For movies and sports specifically, expert reviews consistently highlight one model:
+                <div class="message-time">3:49 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Expert recommendation module with brand sponsorship (Evaluate Stage) -->
+            <div class="expert-recommendation">
+                <div class="expert-header">
+                    <div class="expert-icon">👨‍💼</div>
+                    <div class="expert-title">Expert Recommendation</div>
+                </div>
+                <div class="expert-content">
+                    For viewers who prioritize movies and sports, experts consistently recommend the Sony A95L OLED for its industry-leading motion clarity and cinematic picture quality. Sony's expertise in professional studio monitors translates to more accurate colors and smoother action scenes.
+                </div>
+                <div class="expert-product">
+                    <div class="expert-product-image">Sony A95L</div>
+                    <div class="expert-product-details">
+                        <div class="expert-product-name">Sony A95L OLED TV</div>
+                        <div class="expert-product-price">$2,499</div>
+                    </div>
+                </div>
+                <div class="special-offer">
+                    <div class="offer-badge">SPECIAL</div>
+                    <div class="offer-details">$50 gift card if you choose Sony A95L today + free premium delivery and setup</div>
+                </div>
+                <span class="sponsored-tag">Recommendation sponsored by Sony</span>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot follow-up question -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Based on this comparison, do you have a preference between these models? Or would you like more information about any specific feature?
+                <div class="message-time">3:50 PM</div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="input-area">
+            <input type="text" class="input-box" placeholder="Type your message...">
+            <button class="send-button">➤</button>
+        </div>
+    </div>
+</body>
+</html>

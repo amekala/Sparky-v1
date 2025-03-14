@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sparky - Learn Stage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: white;
+            height: 100vh;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .header {
+            background-color: #0071dc;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .chat-container {
+            padding: 15px;
+            overflow-y: auto;
+            height: calc(100vh - 160px);
+        }
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            position: relative;
+            clear: both;
+        }
+        .user-message {
+            background-color: #e6f2ff;
+            float: right;
+            border-bottom-right-radius: 4px;
+        }
+        .bot-message {
+            background-color: #f0f0f0;
+            float: left;
+            border-bottom-left-radius: 4px;
+        }
+        .message-time {
+            font-size: 0.7em;
+            color: #888;
+            margin-top: 5px;
+            text-align: right;
+        }
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            width: 480px;
+            background-color: white;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            display: flex;
+        }
+        .input-box {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+        .send-button {
+            background-color: #0071dc;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        .bot-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #0071dc;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+            text-align: center;
+            color: white;
+            line-height: 30px;
+            font-weight: bold;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        /* Ad Components for Learn Stage */
+        .sponsored-qa {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .qa-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background-color: #f8f8f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #333;
+        }
+        .qa-title {
+            font-weight: bold;
+            flex-grow: 1;
+        }
+        .qa-question {
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .qa-answer {
+            padding: 5px 10px;
+        }
+        .sponsored-tag {
+            font-size: 0.7em;
+            color: #888;
+            margin-top: 10px;
+            display: block;
+        }
+        .product-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .product-image-large {
+            height: 180px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            color: #888;
+        }
+        .product-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .product-name-large {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .product-price-large {
+            color: #0071dc;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .product-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .rating-stars {
+            color: #ffc107;
+            margin-right: 5px;
+        }
+        .rating-count {
+            color: #888;
+            font-size: 0.8em;
+        }
+        .review-insights {
+            background-color: #f8f8f8;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .insight-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .insight-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .insight-percentage {
+            width: 40px;
+            font-weight: bold;
+            color: #0071dc;
+        }
+        .insight-text {
+            flex-grow: 1;
+        }
+        .educational-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .edu-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .edu-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background-color: #f0f7ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0071dc;
+            font-size: 1.2em;
+        }
+        .edu-title {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .edu-content {
+            margin-bottom: 10px;
+        }
+        .edu-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+        }
+        .feature-icon {
+            color: #0071dc;
+            margin-right: 5px;
+            font-size: 1.1em;
+        }
+        .feature-text {
+            font-size: 0.9em;
+        }
+        .interactive-banner {
+            background-color: #f0f7ff;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #cce5ff;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .banner-icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+            color: #0071dc;
+        }
+        .banner-text {
+            flex-grow: 1;
+        }
+        .banner-action {
+            background-color: #0071dc;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .video-embed {
+            background-color: #f8f8f8;
+            height: 180px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        .play-button {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .play-icon {
+            color: #0071dc;
+            font-size: 1.5em;
+        }
+        .video-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .video-duration {
+            font-size: 0.8em;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Sparky</h2>
+        </div>
+        <div class="chat-container">
+            <!-- User question about vacuum cleaners -->
+            <div class="message user-message">
+                I need a new vacuum cleaner for pet hair. What should I look for?
+                <div class="message-time">2:15 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with initial information -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Great question! When looking for a vacuum cleaner for pet hair, you'll want to consider factors like suction power, specialized pet hair attachments, filter quality, and ease of maintenance. Let me share some information to help you choose the right one.
+                <div class="message-time">2:15 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Interactive banner ad (Learn Stage) -->
+            <div class="interactive-banner">
+                <div class="banner-icon">🌀</div>
+                <div class="banner-text">Ask me about the Dyson V15 vacuum's performance on pet hair</div>
+                <div class="banner-action">Learn More</div>
+                <span class="sponsored-tag">Sponsored by Dyson</span>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User clicks on the banner -->
+            <div class="message user-message">
+                Tell me about the Dyson V15 for pet hair
+                <div class="message-time">2:16 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with product information -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                The Dyson V15 Detect is an excellent choice for pet hair. It features a specialized pet hair attachment and powerful suction technology. Here are the details:
+                <div class="message-time">2:16 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Product card with AI-augmented review insights (Learn Stage) -->
+            <div class="product-card">
+                <div class="product-image-large">Dyson V15 Detect Cordless Vacuum</div>
+                <div class="product-details">
+                    <div class="product-name-large">Dyson V15 Detect</div>
+                    <div class="product-price-large">$749.99</div>
+                </div>
+                <div class="product-rating">
+                    <div class="rating-stars">★★★★★</div>
+                    <div class="rating-count">4.7 (2,358 reviews)</div>
+                </div>
+                
+                <!-- AI-augmented review insights -->
+                <div class="review-insights">
+                    <div class="insight-header">What pet owners are saying:</div>
+                    <div class="insight-item">
+                        <div class="insight-percentage">94%</div>
+                        <div class="insight-text">of pet owners say it effectively removes embedded pet hair from carpets</div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-percentage">89%</div>
+                        <div class="insight-text">of budget-conscious buyers recommend this model for its battery life</div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-percentage">92%</div>
+                        <div class="insight-text">of reviewers mention the anti-tangle brush head as a key feature</div>
+                    </div>
+                </div>
+                <span class="sponsored-tag">Sponsored by Dyson</span>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User asks a follow-up question -->
+            <div class="message user-message">
+                How does it handle pet hair on furniture?
+                <div class="message-time">2:17 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with educational content -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                The Dyson V15 comes with a mini motorized tool specifically designed for furniture and upholstery. Here's how it works with pet hair on different surfaces:
+                <div class="message-time">2:17 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Educational content card with brand sponsorship (Learn Stage) -->
+            <div class="educational-card">
+                <div class="edu-header">
+                    <div class="edu-icon">💡</div>
+                    <div class="edu-title">Pet Hair Removal Technology</div>
+                </div>
+                <div class="edu-content">
+                    The Dyson V15's Hair Screw Tool uses anti-tangle conical brush bar technology that spirals hair off the brush and into the bin, making it ideal for pet hair on furniture.
+                </div>
+                
+                <div class="edu-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div class="feature-text">Anti-tangle design prevents hair wrap</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div class="feature-text">28% more suction than previous models</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div class="feature-text">HEPA filtration traps allergens</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div class="feature-text">Up to 60 minutes of run time</div>
+                    </div>
+                </div>
+                <span class="sponsored-tag">Educational content by Dyson</span>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Embedded video content (Learn Stage) -->
+            <div class="video-embed">
+                <div class="play-button">
+                    <div class="play-icon">▶</div>
+                </div>
+                <div class="video-title">See the Dyson V15 in action on pet hair</div>
+                <div class="video-duration">2:45</div>
+                <span class="sponsored-tag">Video by Dyson</span>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot continues with more general information -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                If you're considering other options for pet hair removal, here are some important features to look for in any vacuum:
+                <div class="message-time">2:18 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Sponsored Q&A widget (Learn Stage) -->
+            <div class="sponsored-qa">
+                <div class="qa-header">
+                    <div class="brand-logo">?</div>
+                    <div class="qa-title">Pet Hair Vacuum FAQs</div>
+                </div>
+                <div class="qa-question">
+                    Q: What type of filter is best for households with pets?
+                </div>
+                <div class="qa-answer">
+                    A: HEPA filters are recommended for pet owners as they trap 99.97% of particles as small as 0.3 microns, including pet dander and allergens that can trigger allergies.
+                </div>
+                <div class="qa-question">
+                    Q: Are bagless vacuums better for pet hair?
+                </div>
+                <div class="qa-answer">
+                    A: Bagless vacuums let you see when they're full and avoid the cost of replacement bags, but sealed bagged systems may be better for allergy sufferers as they contain dust and dander more effectively during disposal.
+                </div>
+                <div class="qa-question">
+                    Q: How often should I clean the brush roll when vacuuming pet hair?
+                </div>
+                <div class="qa-answer">
+                    A: For homes with pets, check and clean the brush roll every 1-2 uses to prevent hair buildup that can reduce performance and damage the vacuum motor.
+                </div>
+                <span class="sponsored-tag">Sponsored by Vacuum Experts Association</span>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot follow-up question -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Would you like me to show you a comparison of top-rated pet hair vacuums across different price ranges? Or do you have any other specific questions about vacuum features?
+                <div class="message-time">2:19 PM</div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="input-area">
+            <input type="text" class="input-box" placeholder="Type your message...">
+            <button class="send-button">➤</button>
+        </div>
+    </div>
+</body>
+</html>

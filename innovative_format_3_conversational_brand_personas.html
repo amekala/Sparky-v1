@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sparky - Conversational Brand Personas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: white;
+            height: 100vh;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .header {
+            background-color: #0071dc;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .chat-container {
+            padding: 15px;
+            overflow-y: auto;
+            height: calc(100vh - 160px);
+        }
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            position: relative;
+            clear: both;
+        }
+        .user-message {
+            background-color: #e6f2ff;
+            float: right;
+            border-bottom-right-radius: 4px;
+        }
+        .bot-message {
+            background-color: #f0f0f0;
+            float: left;
+            border-bottom-left-radius: 4px;
+        }
+        .message-time {
+            font-size: 0.7em;
+            color: #888;
+            margin-top: 5px;
+            text-align: right;
+        }
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            width: 480px;
+            background-color: white;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            display: flex;
+        }
+        .input-box {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+        .send-button {
+            background-color: #0071dc;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        .bot-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #0071dc;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+            text-align: center;
+            color: white;
+            line-height: 30px;
+            font-weight: bold;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        
+        /* Innovative Ad Format: Conversational Brand Personas */
+        .brand-persona-option {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .persona-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .persona-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .nike-avatar {
+            background-color: #000;
+        }
+        .dyson-avatar {
+            background-color: #2d3092;
+        }
+        .persona-details {
+            flex-grow: 1;
+        }
+        .persona-name {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        .persona-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .persona-sponsor {
+            font-size: 0.8em;
+            color: #666;
+            background-color: #f8f8f8;
+            padding: 3px 8px;
+            border-radius: 12px;
+            align-self: flex-start;
+        }
+        .persona-action {
+            margin-top: 10px;
+        }
+        .persona-button {
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+        .persona-button:hover {
+            background-color: #e6e6e6;
+        }
+        
+        /* Brand Persona Active State */
+        .brand-persona-active {
+            margin: 15px 0;
+        }
+        .persona-banner {
+            background-color: #f8f8f8;
+            border-radius: 12px 12px 0 0;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .persona-info {
+            display: flex;
+            align-items: center;
+        }
+        .persona-title {
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .exit-persona {
+            background-color: #e6e6e6;
+            border: none;
+            border-radius: 15px;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            cursor: pointer;
+        }
+        
+        /* Nike Persona Styling */
+        .nike-message {
+            background-color: #f5f5f5;
+            border-left: 3px solid #000;
+        }
+        .nike-container {
+            border: 1px solid #e0e0e0;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        /* Dyson Persona Styling */
+        .dyson-message {
+            background-color: #f0f2ff;
+            border-left: 3px solid #2d3092;
+        }
+        .dyson-container {
+            border: 1px solid #e0e0e0;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        /* Product Showcase in Brand Persona */
+        .product-showcase {
+            padding: 15px;
+        }
+        .showcase-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .showcase-products {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
+            padding: 5px 0 15px;
+            scrollbar-width: thin;
+        }
+        .showcase-products::-webkit-scrollbar {
+            height: 6px;
+        }
+        .showcase-products::-webkit-scrollbar-thumb {
+            background-color: #ddd;
+            border-radius: 3px;
+        }
+        .showcase-product {
+            min-width: 150px;
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+        .product-image {
+            height: 100px;
+            background-color: #f8f8f8;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            color: #888;
+        }
+        .product-name {
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        .product-price {
+            color: #0071dc;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        /* Innovative Ad Format: Shoppable Media */
+        .shoppable-media {
+            margin: 15px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        .media-container {
+            position: relative;
+            height: 250px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .media-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 1.2em;
+        }
+        .product-tags {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .product-tag {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            border: 2px solid #0071dc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0071dc;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .tag-1 {
+            top: 30%;
+            left: 25%;
+        }
+        .tag-2 {
+            top: 60%;
+            left: 40%;
+        }
+        .tag-3 {
+            top: 40%;
+            left: 75%;
+        }
+        .product-popup {
+            position: absolute;
+            width: 180px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 10;
+            display: none;
+        }
+        .popup-1 {
+            top: 35%;
+            left: 30%;
+        }
+        .popup-2 {
+            top: 65%;
+            left: 45%;
+        }
+        .popup-3 {
+            top: 45%;
+            left: 80%;
+        }
+        .product-tag:hover + .product-popup {
+            display: block;
+        }
+        .popup-image {
+            height: 80px;
+            background-color: #f8f8f8;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            color: #888;
+            font-size: 0.8em;
+        }
+        .popup-name {
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        .popup-price {
+            color: #0071dc;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+        .popup-button {
+            background-color: #0071dc;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            width: 100%;
+            cursor: pointer;
+        }
+        .media-footer {
+            padding: 10px;
+            background-color: #f8f8f8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .media-title {
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .media-sponsor {
+            font-size: 0.8em;
+            color: #666;
+        }
+        
+        /* Innovative Ad Format: Skill Sponsorship */
+        .sponsored-skill {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .skill-header {
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .skill-title {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .skill-icon {
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+        .skill-sponsor {
+            font-size: 0.8em;
+            color: #666;
+            background-color: #f8f8f8;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+        .skill-content {
+            padding: 15px;
+        }
+        .skill-description {
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+        .skill-input-area {
+            margin-bottom: 15px;
+        }
+        .skill-input-row {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .skill-input-label {
+            width: 120px;
+            font-size: 0.9em;
+        }
+        .skill-input {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .skill-button {
+            background-color: #0071dc;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+        .skill-results {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .result-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .result-content {
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        .sponsored-recommendations {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Sparky</h2>
+        </div>
+        <div class="chat-container">
+            <!-- User question -->
+            <div class="message user-message">
+                I need new running shoes for my first marathon
+                <div class="message-time">3:15 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with brand persona option -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Congratulations on training for your first marathon! For marathon training, you'll need shoes with good cushioning, support, and durability to handle the high mileage. I can help you find the right running shoes based on your specific needs.
+                <div class="message-time">3:15 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Innovative Ad Format: Conversational Brand Personas -->
+            <div class="brand-persona-option">
+                <div class="persona-header">
+                    <div class="persona-avatar nike-avatar">N</div>
+                    <div class="persona-details">
+                        <div class="persona-name">Nike Running Expert</div>
+                        <div class="persona-description">Get personalized marathon shoe recommendations from Nike's running specialists</div>
+                    </div>
+                    <div class="persona-sponsor">Sponsored</div>
+                </div>
+                <div class="persona-action">
+                    <button class="persona-button">Chat with Nike Expert</button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User selects brand persona -->
+            <div class="message user-message">
+                Let me talk to the Nike expert
+                <div class="message-time">3:16 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Brand Persona Active State -->
+            <div class="brand-persona-active">
+                <div class="persona-banner">
+                    <div class="persona-info">
+                        <div class="persona-avatar nike-avatar">N</div>
+                        <div class="persona-title">Nike Running Expert</div>
+                    </div>
+                    <button class="exit-persona">Return to Sparky</button>
+                </div>
+                <div class="nike-container">
+                    <!-- Nike Persona Messages -->
+                    <div class="message nike-message">
+                        <div class="bot-avatar" style="background-color: #000;">N</div>
+                        Hi there! I'm the Nike Running Expert assistant. Congratulations on training for your first marathon! I can help you find the perfect shoes based on your running style, foot type, and training plan. What kind of surfaces do you typically run on?
+                        <div class="message-time">3:16 PM</div>
+                    </div>
+                    <div class="clearfix"></div>
+                    
+                    <!-- User response to brand persona -->
+                    <div class="message user-message">
+                        Mostly roads and some park trails
+                        <div class="message-time">3:16 PM</div>
+                    </div>
+                    <div class="clearfix"></div>
+                    
+                    <!-- Nike Persona Response -->
+                    <div class="message nike-message">
+                        <div class="bot-avatar" style="background-color: #000;">N</div>
+                        Thanks for sharing that! Road running with some trail work means you'll need versatile shoes with good cushioning for the pavement but enough traction for light trails.
+                        
+                        A few more questions to help narrow down the perfect marathon shoe for you:
+                        
+                        1. Do you know if you have a neutral stride or if you pronate (foot rolls inward)?
+                        2. Do you prefer a more cushioned feel or a more responsive, firmer ride?
+                        3. What's your approximate budget for running shoes?
+                        <div class="message-time">3:17 PM</div>
+                    </div>
+                    <div class="clearfix"></div>
+                    
+                    <!-- User response to brand persona -->
+                    <div class="message user-message">
+                        I have a neutral stride, prefer cushioning, and can spend up to $160
+                        <div class="message-time">3:17 PM</div>
+                    </div>
+                    <div class="clearfix"></div>
+                    
+                    <!-- Nike Persona Response with product showcase -->
+                    <div class="message nike-message">
+                        <div class="bot-avatar" style="background-color: #000;">N</div>
+                        Perfect! Based on your neutral stride, preference for cushioning, and budget, I have several excellent options for your marathon training. Here are my top recommendations:
+                        <div class="message-time">3:18 PM</div>
+                    </div>
+                    <div class="clearfix"></div>
+                    
+                    <!-- Product Showcase in Brand Persona -->
+                    <div class="product-showcase">
+                        <div class="showcase-title">Recommended Marathon Shoes</div>
+                        <div class="showcase-products">
+                            <div class="showcase-product">
+                                <div class="product-image">Nike Pegasus 40</div>
+                                <div class="product-name">Nike Pegasus 40</div>
+                                <div class="product-price">$130</div>
+                            </div>
+                            <div class="showcase-product">
+                                <div class="product-image">Nike Invincible 3</div>
+                                <div class="product-name">Nike Invincible 3</div>
+                                <div class="product-price">$160</div>
+                            </div>
+                            <div class="showcase-product">
+                                <div class="product-image">Nike Vomero 17</div>
+                                <div class="product-name">Nike Vomero 17</div>
+                                <div class="product-price">$150</div>
+                            </div>
+                            <div class="showcase-product">
+                                <div class="product-image">Nike Structure 25</div>
+                                <div class="product-name">Nike Structure 25</div>
+                                <div class="product-price">$140</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Nike Persona Explanation -->
+                    <div class="message nike-message">
+                        <div class="bot-avatar" style="background-color: #000;">N</div>
+                        The Nike Invincible 3 would be my top recommendation for your marathon training. It offers maximum cushioning with ZoomX foam (our most responsive foam) to help reduce impact during long runs. The Pegasus 40 is our most versatile option and a bit more affordable. The Vomero 17 offers plush cushioning with a smooth ride, ideal for high mileage.
+                        
+                        Would you like more specific details about any of these models? Or would you prefer to know about our marathon training programs that complement your shoe purchase?
+                        <div class="message-time">3:18 PM</div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User exits brand persona -->
+            <div class="message user-message">
+                Return to Sparky
+                <div class="message-time">3:19 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response after brand persona exit -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                I'm back! I see you got some specific Nike recommendations for marathon training. Would you like me to show you options from other brands as well for comparison?
+                <div class="message-time">3:19 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User asks about vacuums -->
+            <div class="message user-message">
+                Actually, I also need a new vacuum cleaner for pet hair
+                <div class="message-time">3:20 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with Dyson brand persona option -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                I'd be happy to help you find a vacuum cleaner that works well for pet hair! You'll want to look for models with strong suction, specialized pet hair attachments, and good filtration systems to capture dander and allergens.
+                <div class="message-time">3:20 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Another Brand Persona Option -->
+            <div class="brand-persona-option">
+                <div class="persona-header">
+                    <div class="persona-avatar dyson-avatar">D</div>
+                    <div class="persona-details">
+                        <div class="persona-name">Dyson Cleaning Expert</div>
+                        <div class="persona-description">Get personalized vacuum recommendations for pet hair removal</div>
+                    </div>
+                    <div class="persona-sponsor">Sponsored</div>
+                </div>
+                <div class="persona-action">
+                    <button class="persona-button">Chat with Dyson Expert</button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User asks about general options instead -->
+            <div class="message user-message">
+                I'd like to see options from different brands first
+                <div class="message-time">3:21 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with general info -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                That's a good approach! Here are some top-rated vacuum cleaners for pet hair from different brands:
+                
+                1. Shark Navigator Lift-Away - Great suction with a sealed HEPA filter system ($199-$249)
+                2. Dyson V15 Detect - Cordless with laser dust detection and anti-tangle technology ($699)
+                3. Bissell Pet Hair Eraser - Specifically designed for pet hair with tangle-free brush roll ($299)
+                4. Miele Complete C3 Cat & Dog - Bagged canister vacuum with odor-neutralizing filter ($699)
+                5. Hoover MAXLife Pro Pet - Budget-friendly option with HEPA filtration ($199)
+                
+                Would you like more details about any of these models?
+                <div class="message-time">3:21 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Innovative Ad Format: Shoppable Media -->
+            <div class="shoppable-media">
+                <div class="media-container">
+                    <div class="media-image">Pet Hair Vacuum Comparison Scene</div>
+                    <div class="product-tags">
+                        <div class="product-tag tag-1">1</div>
+                        <div class="product-popup popup-1">
+                            <div class="popup-image">Shark Navigator</div>
+                            <div class="popup-name">Shark Navigator Lift-Away</div>
+                            <div class="popup-price">$199.99</div>
+                            <button class="popup-button">Shop Now</button>
+                        </div>
+                        
+                        <div class="product-tag tag-2">2</div>
+                        <div class="product-popup popup-2">
+                            <div class="popup-image">Dyson V15</div>
+                            <div class="popup-name">Dyson V15 Detect</div>
+                            <div class="popup-price">$699.99</div>
+                            <button class="popup-button">Shop Now</button>
+                        </div>
+                        
+                        <div class="product-tag tag-3">3</div>
+                        <div class="product-popup popup-3">
+                            <div class="popup-image">Bissell</div>
+                            <div class="popup-name">Bissell Pet Hair Eraser</div>
+                            <div class="popup-price">$299.99</div>
+                            <button class="popup-button">Shop Now</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="media-footer">
+                    <div class="media-title">Pet Hair Vacuum Comparison</div>
+                    <div class="media-sponsor">Sponsored by Dyson</div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User asks about carpet cleaning -->
+            <div class="message user-message">
+                Which one is best for carpet cleaning?
+                <div class="message-time">3:22 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Innovative Ad Format: Skill Sponsorship -->
+            <div class="sponsored-skill">
+                <div class="skill-header">
+                    <div class="skill-title">
+                        <span class="skill-icon">🧮</span>
+                        Carpet Cleaner Finder
+                    </div>
+                    <div class="skill-sponsor">Sponsored by Dyson</div>
+                </div>
+                <div class="skill-content">
+                    <div class="skill-description">
+                        Find the perfect carpet cleaning vacuum based on your specific needs and carpet type.
+                    </div>
+                    <div class="skill-input-area">
+                        <div class="skill-input-row">
+                            <div class="skill-input-label">Carpet Type:</div>
+                            <select class="skill-input">
+                                <option>Low Pile</option>
+                                <option selected>Medium Pile</option>
+                                <option>High Pile/Shag</option>
+                                <option>Mixed Surfaces</option>
+                            </select>
+                        </div>
+                        <div class="skill-input-row">
+                            <div class="skill-input-label">Pet Hair Level:</div>
+                            <select class="skill-input">
+                                <option>Light</option>
+                                <option selected>Moderate</option>
+                                <option>Heavy</option>
+                            </select>
+                        </div>
+                        <div class="skill-input-row">
+                            <div class="skill-input-label">Allergies:</div>
+                            <select class="skill-input">
+                                <option>None</option>
+                                <option selected>Mild</option>
+                                <option>Severe</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="skill-button">Find Best Matches</button>
+                    
+                    <div class="skill-results">
+                        <div class="result-title">Best Carpet Cleaners for Your Needs:</div>
+                        <div class="result-content">
+                            <strong>For medium pile carpets with moderate pet hair and mild allergies, your best options are:</strong><br><br>
+                            1. Dyson Ball Animal 3 (98% match)<br>
+                            2. Shark Navigator Lift-Away (92% match)<br>
+                            3. Miele Complete C3 Cat & Dog (89% match)
+                        </div>
+                        <div class="sponsored-recommendations">
+                            <div class="showcase-products">
+                                <div class="showcase-product">
+                                    <div class="product-image">Dyson Ball</div>
+                                    <div class="product-name">Dyson Ball Animal 3</div>
+                                    <div class="product-price">$499.99</div>
+                                </div>
+                                <div class="showcase-product">
+                                    <div class="product-image">Dyson V15</div>
+                                    <div class="product-name">Dyson V15 Detect</div>
+                                    <div class="product-price">$699.99</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with more information -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Based on the carpet cleaner finder results, the Dyson Ball Animal 3 would be an excellent choice for your medium pile carpets with pet hair. It has powerful suction specifically engineered for carpet cleaning and comes with a tangle-free turbine tool for pet hair.
+                
+                Would you like more information about any specific vacuum model, or would you like to see some video demonstrations of how they perform on carpets with pet hair?
+                <div class="message-time">3:23 PM</div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="input-area">
+            <input type="text" class="input-box" placeholder="Type your message...">
+            <button class="send-button">➤</button>
+        </div>
+    </div>
+</body>
+</html>

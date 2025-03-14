@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sparky - Immersive Shopping Experiences</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: white;
+            height: 100vh;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .header {
+            background-color: #0071dc;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .chat-container {
+            padding: 15px;
+            overflow-y: auto;
+            height: calc(100vh - 160px);
+        }
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            position: relative;
+            clear: both;
+        }
+        .user-message {
+            background-color: #e6f2ff;
+            float: right;
+            border-bottom-right-radius: 4px;
+        }
+        .bot-message {
+            background-color: #f0f0f0;
+            float: left;
+            border-bottom-left-radius: 4px;
+        }
+        .message-time {
+            font-size: 0.7em;
+            color: #888;
+            margin-top: 5px;
+            text-align: right;
+        }
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            width: 480px;
+            background-color: white;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            display: flex;
+        }
+        .input-box {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+        .send-button {
+            background-color: #0071dc;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        .bot-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #0071dc;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+            text-align: center;
+            color: white;
+            line-height: 30px;
+            font-weight: bold;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        
+        /* Innovative Ad Format: Immersive Shopping Experience */
+        .immersive-experience-option {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+        }
+        .experience-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #f0f7ff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: #0071dc;
+            font-size: 1.5em;
+        }
+        .experience-details {
+            flex-grow: 1;
+        }
+        .experience-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .experience-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .experience-sponsor {
+            font-size: 0.8em;
+            color: #666;
+            background-color: #f8f8f8;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin-top: 5px;
+            display: inline-block;
+        }
+        .experience-button {
+            background-color: #0071dc;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        /* Immersive Experience Interface */
+        .immersive-interface {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .interface-header {
+            background-color: #f8f8f8;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .interface-title {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .interface-icon {
+            margin-right: 8px;
+        }
+        .interface-sponsor {
+            font-size: 0.8em;
+            color: #666;
+        }
+        .exit-interface {
+            background-color: #e6e6e6;
+            border: none;
+            border-radius: 15px;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            cursor: pointer;
+        }
+        .interface-content {
+            padding: 0;
+        }
+        
+        /* Virtual Room Experience */
+        .virtual-room {
+            position: relative;
+            height: 300px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .room-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 1.2em;
+        }
+        .tv-overlay {
+            position: absolute;
+            width: 50%;
+            height: 30%;
+            top: 35%;
+            left: 25%;
+            background-color: rgba(0,0,0,0.7);
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .room-controls {
+            display: flex;
+            padding: 12px;
+            gap: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .room-control {
+            flex-grow: 1;
+            padding: 8px;
+            text-align: center;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+        .room-control.active {
+            background-color: #e6f2ff;
+            color: #0071dc;
+            font-weight: bold;
+        }
+        
+        /* TV Comparison Interface */
+        .tv-comparison {
+            padding: 15px;
+        }
+        .comparison-controls {
+            display: flex;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+        .comparison-control {
+            flex-grow: 1;
+            padding: 8px;
+            text-align: center;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+        .comparison-control.active {
+            background-color: #e6f2ff;
+            color: #0071dc;
+            font-weight: bold;
+        }
+        .tv-models {
+            display: flex;
+            gap: 15px;
+        }
+        .tv-model {
+            flex-grow: 1;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .tv-model.highlighted {
+            background-color: #e6f2ff;
+            border: 1px solid #cce5ff;
+        }
+        .model-image {
+            height: 80px;
+            background-color: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            color: #888;
+            font-size: 0.8em;
+        }
+        .model-name {
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        .model-price {
+            color: #0071dc;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+        .model-button {
+            background-color: #0071dc;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            width: 100%;
+            cursor: pointer;
+        }
+        
+        /* Innovative Ad Format: Conversational Quizzes */
+        .quiz-container {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .quiz-header {
+            background-color: #f8f8f8;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .quiz-title {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .quiz-icon {
+            margin-right: 8px;
+        }
+        .quiz-sponsor {
+            font-size: 0.8em;
+            color: #666;
+            background-color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+        .quiz-content {
+            padding: 15px;
+        }
+        .quiz-question {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .quiz-option {
+            background-color: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .quiz-option:hover {
+            background-color: #f0f0f0;
+            border-color: #ccc;
+        }
+        .quiz-option.selected {
+            background-color: #e6f2ff;
+            border-color: #cce5ff;
+        }
+        .quiz-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .progress-indicator {
+            display: flex;
+            gap: 5px;
+        }
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ddd;
+            border-radius: 50%;
+        }
+        .progress-dot.active {
+            background-color: #0071dc;
+        }
+        .quiz-button {
+            background-color: #0071dc;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        /* Quiz Results */
+        .quiz-results {
+            padding: 15px;
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .results-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .results-description {
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+        .recommended-product {
+            background-color: white;
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .recommended-image {
+            width: 80px;
+            height: 80px;
+            background-color: #f8f8f8;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: #888;
+            font-size: 0.8em;
+        }
+        .recommended-details {
+            flex-grow: 1;
+        }
+        .recommended-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .recommended-description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .recommended-price {
+            color: #0071dc;
+            font-weight: bold;
+        }
+        .results-cta {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        /* Innovative Ad Format: Adaptive Narratives */
+        .narrative-container {
+            margin: 15px 0;
+        }
+        .narrative-stage {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .narrative-badge {
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background-color: #0071dc;
+            color: white;
+            font-size: 0.7em;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        .narrative-content {
+            margin-top: 5px;
+        }
+        .narrative-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .narrative-text {
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+        .narrative-media {
+            height: 150px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            color: #888;
+        }
+        .narrative-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .narrative-action {
+            flex-grow: 1;
+            background-color: #f8f8f8;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+        .narrative-action.primary {
+            background-color: #0071dc;
+            color: white;
+            font-weight: bold;
+        }
+        .narrative-sponsor {
+            font-size: 0.8em;
+            color: #666;
+            text-align: right;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Sparky</h2>
+        </div>
+        <div class="chat-container">
+            <!-- User question -->
+            <div class="message user-message">
+                I'm trying to decide between different 4K TVs for my living room
+                <div class="message-time">4:30 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with immersive experience option -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Choosing the right 4K TV for your living room involves considering factors like screen size, display technology (OLED, QLED, LED), smart features, and your budget. Would you like me to help you compare different models based on these factors?
+                <div class="message-time">4:30 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Innovative Ad Format: Immersive Shopping Experience -->
+            <div class="immersive-experience-option">
+                <div class="experience-icon">📺</div>
+                <div class="experience-details">
+                    <div class="experience-title">TV Comparison Studio</div>
+                    <div class="experience-description">Compare 4K TVs side-by-side in a virtual living room to see how they'll look in your space</div>
+                    <div class="experience-sponsor">Sponsored by Samsung</div>
+                    <button class="experience-button">Enter Experience</button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User selects immersive experience -->
+            <div class="message user-message">
+                Let me try the TV Comparison Studio
+                <div class="message-time">4:31 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Immersive Experience Interface -->
+            <div class="immersive-interface">
+                <div class="interface-header">
+                    <div class="interface-title">
+                        <span class="interface-icon">📺</span>
+                        TV Comparison Studio
+                    </div>
+                    <div class="interface-sponsor">Sponsored by Samsung</div>
+                    <button class="exit-interface">Exit</button>
+                </div>
+                <div class="interface-content">
+                    <!-- Virtual Room Experience -->
+                    <div class="virtual-room">
+                        <div class="room-image">Modern Living Room Setting</div>
+                        <div class="tv-overlay">Samsung QN90C Neo QLED</div>
+                    </div>
+                    <div class="room-controls">
+                        <div class="room-control">Small Room</div>
+                        <div class="room-control active">Medium Room</div>
+                        <div class="room-control">Large Room</div>
+                    </div>
+                    
+                    <!-- TV Comparison Interface -->
+                    <div class="tv-comparison">
+                        <div class="comparison-controls">
+                            <div class="comparison-control">Size</div>
+                            <div class="comparison-control active">Picture</div>
+                            <div class="comparison-control">Features</div>
+                            <div class="comparison-control">Price</div>
+                        </div>
+                        <div class="tv-models">
+                            <div class="tv-model highlighted">
+                                <div class="model-image">Samsung QN90C</div>
+                                <div class="model-name">Samsung QN90C Neo QLED</div>
+                                <div class="model-price">$1,799.99</div>
+                                <button class="model-button">View Details</button>
+                            </div>
+                            <div class="tv-model">
+                                <div class="model-image">Sony X95L</div>
+                                <div class="model-name">Sony X95L Mini LED</div>
+                                <div class="model-price">$1,999.99</div>
+                                <button class="model-button">View Details</button>
+                            </div>
+                            <div class="tv-model">
+                                <div class="model-image">LG C3</div>
+                                <div class="model-name">LG C3 OLED</div>
+                                <div class="model-price">$1,699.99</div>
+                                <button class="model-button">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User exits immersive experience -->
+            <div class="message user-message">
+                Exit the comparison studio
+                <div class="message-time">4:32 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response after immersive experience -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                I see you've explored the TV Comparison Studio. Based on what you saw, do you have any specific questions about the Samsung QN90C Neo QLED, Sony X95L Mini LED, or LG C3 OLED? Or would you like information about other TV models?
+                <div class="message-time">4:32 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User asks about TV for gaming -->
+            <div class="message user-message">
+                Which TV is best for gaming?
+                <div class="message-time">4:33 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Innovative Ad Format: Conversational Quizzes -->
+            <div class="quiz-container">
+                <div class="quiz-header">
+                    <div class="quiz-title">
+                        <span class="quiz-icon">🎮</span>
+                        Gaming TV Finder Quiz
+                    </div>
+                    <div class="quiz-sponsor">Sponsored by Samsung</div>
+                </div>
+                <div class="quiz-content">
+                    <div class="quiz-question">What type of games do you play most often?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option selected">Fast-paced competitive games (FPS, racing, fighting)</div>
+                        <div class="quiz-option">Role-playing and adventure games</div>
+                        <div class="quiz-option">Sports and casual games</div>
+                        <div class="quiz-option">A mix of different game types</div>
+                    </div>
+                    <div class="quiz-progress">
+                        <div class="progress-indicator">
+                            <div class="progress-dot active"></div>
+                            <div class="progress-dot"></div>
+                            <div class="progress-dot"></div>
+                        </div>
+                        <button class="quiz-button">Next Question</button>
+                    </div>
+                    
+                    <!-- Quiz Results (would normally be shown after completing all questions) -->
+                    <div class="quiz-results">
+                        <div class="results-title">Your Perfect Gaming TV Match</div>
+                        <div class="results-description">Based on your preference for fast-paced competitive games, you need a TV with low input lag, fast response time, and high refresh rate.</div>
+                        <div class="recommended-product">
+                            <div class="recommended-image">Samsung QN90C</div>
+                            <div class="recommended-details">
+                                <div class="recommended-name">Samsung QN90C Neo QLED</div>
+                                <div class="recommended-description">4K 120Hz, 9.8ms input lag, VRR/FreeSync/G-Sync support</div>
+                                <div class="recommended-price">$1,799.99</div>
+                            </div>
+                        </div>
+                        <div class="results-cta">
+                            <button class="quiz-button">See All Gaming TV Recommendations</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User asks about another brand -->
+            <div class="message user-message">
+                Tell me about Sony TVs
+                <div class="message-time">4:34 PM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Innovative Ad Format: Adaptive Sponsored Narratives -->
+            <div class="narrative-container">
+                <!-- Initial Mention Stage -->
+                <div class="narrative-stage">
+                    <div class="narrative-badge">SPONSORED</div>
+                    <div class="narrative-content">
+                        <div class="narrative-title">Sony TV Overview</div>
+                        <div class="narrative-text">
+                            Sony is known for their high-quality image processing, accurate colors, and excellent motion handling. Their premium models like the A95L OLED and X95L Mini LED are particularly popular for their cinematic picture quality.
+                        </div>
+                        <div class="narrative-actions">
+                            <button class="narrative-action">Skip</button>
+                            <button class="narrative-action primary">Tell me more</button>
+                        </div>
+                    </div>
+                    <div class="narrative-sponsor">Sponsored by Sony</div>
+                </div>
+                
+                <!-- Expanded Narrative Stage (would be shown after user shows interest) -->
+                <div class="narrative-stage">
+                    <div class="narrative-badge">SPONSORED</div>
+                    <div class="narrative-content">
+                        <div class="narrative-title">Sony's Unique Technologies</div>
+                        <div class="narrative-text">
+                            Sony TVs stand out with their Cognitive Processor XR, which analyzes content the way humans see and hear for a more natural picture. Their BRAVIA XR models also feature Acoustic Surface Audio+ where the screen itself is the speaker, creating sound that matches the action on screen.
+                        </div>
+                        <div class="narrative-media">Sony XR Processor Demonstration</div>
+                        <div class="narrative-actions">
+                            <button class="narrative-action">Compare Models</button>
+                            <button class="narrative-action primary">See Demonstration</button>
+                        </div>
+                    </div>
+                    <div class="narrative-sponsor">Sponsored by Sony</div>
+                </div>
+                
+                <!-- Further Expansion Stage (would be shown after continued engagement) -->
+                <div class="narrative-stage">
+                    <div class="narrative-badge">SPONSORED</div>
+                    <div class="narrative-content">
+                        <div class="narrative-title">Sony A95L OLED: The Flagship Experience</div>
+                        <div class="narrative-text">
+                            The Sony A95L represents the pinnacle of Sony's TV technology, featuring QD-OLED technology for incredible brightness and color volume while maintaining perfect blacks. It's particularly excellent for movies, sports, and next-gen gaming with HDMI 2.1 features.
+                        </div>
+                        <div class="narrative-media">Sony A95L OLED Showcase</div>
+                        <div class="narrative-actions">
+                            <button class="narrative-action">View Specifications</button>
+                            <button class="narrative-action primary">Special Offer Details</button>
+                        </div>
+                    </div>
+                    <div class="narrative-sponsor">Sponsored by Sony</div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with general information -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Beyond what you've seen in the sponsored content, Sony TVs are also known for their Google TV smart platform, which offers excellent app support and content recommendations. Their mid-range models like the X90L provide good value while still incorporating many premium features.
+                
+                Would you like me to compare specific Sony models with the Samsung and LG options you saw earlier? Or would you prefer recommendations based on your specific room size and viewing habits?
+                <div class="message-time">4:35 PM</div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="input-area">
+            <input type="text" class="input-box" placeholder="Type your message...">
+            <button class="send-button">➤</button>
+        </div>
+    </div>
+</body>
+</html>
