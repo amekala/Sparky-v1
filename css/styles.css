@@ -33,7 +33,7 @@ body {
 .header {
   background-color: var(--primary-color);
   color: white;
-  padding: 15px;
+  padding: 15px 50px;
   text-align: center;
   position: sticky;
   top: 0;
@@ -55,6 +55,17 @@ body {
   color: white;
   font-size: 1.2rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s;
+}
+
+.back-button:hover {
+  transform: translateX(-3px);
+}
+
+.back-button i {
+  margin-right: 5px;
 }
 
 .chat-container {
@@ -165,6 +176,24 @@ body {
   padding: 10px 0;
   margin: 15px 0;
   scroll-behavior: smooth;
+}
+
+/* Non-sponsored prompt */
+.prompt {
+  min-width: 150px;
+  padding: 12px;
+  background-color: #f8f8f8;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.prompt:hover {
+  border-color: var(--secondary-color);
+  transform: translateY(-2px);
 }
 
 .sponsored-prompt {
@@ -330,7 +359,7 @@ body {
 /* Navigation */
 .site-nav {
   background-color: white;
-  padding: 15px;
+  padding: 10px 15px;
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -339,25 +368,33 @@ body {
   padding: 0;
   margin: 0;
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start;
   flex-wrap: wrap;
+  gap: 5px;
 }
 
 .nav-item {
-  margin: 5px;
+  margin: 2px;
 }
 
 .nav-link {
   color: var(--text-color);
   text-decoration: none;
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: 20px;
   transition: background-color 0.2s;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .nav-link:hover, .nav-link.active {
   background-color: var(--primary-color);
   color: white;
+}
+
+/* Home page only navigation */
+.home-nav {
+  display: block;
 }
 
 /* Home page specific */

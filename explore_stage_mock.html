@@ -21,20 +21,10 @@
         <header class="header">
             <button onclick="window.location.href='index.html'" class="back-button" aria-label="Back to home">
                 <i class="fas fa-arrow-left"></i>
+                <span>Home</span>
             </button>
             <h2>Sparky - Explore Stage</h2>
         </header>
-        
-        <nav class="site-nav" aria-label="Main navigation">
-            <ul class="nav-list">
-                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-                <li class="nav-item"><a href="explore_stage_mock.html" class="nav-link active">Explore</a></li>
-                <li class="nav-item"><a href="learn_stage_mock.html" class="nav-link">Learn</a></li>
-                <li class="nav-item"><a href="evaluate_stage_mock.html" class="nav-link">Evaluate</a></li>
-                <li class="nav-item"><a href="buy_stage_mock.html" class="nav-link">Buy</a></li>
-                <li class="nav-item"><a href="post_transaction_stage_mock.html" class="nav-link">Post-Purchase</a></li>
-            </ul>
-        </nav>
         
         <main id="main-content" class="chat-container">
             <!-- Initial greeting -->
@@ -45,8 +35,15 @@
             </div>
             <div class="clearfix"></div>
             
-            <!-- Sponsored conversation starters (Explore Stage) -->
+            <!-- Non-sponsored conversation starters -->
             <div class="sponsored-prompts">
+                <div class="prompt" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to ask about popular categories">
+                    <span>What's trending now? 🔍</span>
+                </div>
+                <div class="prompt" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to ask about seasonal items">
+                    <span>Seasonal favorites? 🌞</span>
+                </div>
+                <!-- Sponsored conversation starters (Explore Stage) -->
                 <div class="sponsored-prompt" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to ask about gift ideas">
                     <span>Looking for gift ideas? 🎁</span>
                     <span class="sponsored-tag">Sponsored by Hallmark</span>
@@ -55,20 +52,34 @@
                     <span>Summer essentials? ☀️</span>
                     <span class="sponsored-tag">Sponsored by Coleman</span>
                 </div>
-                <div class="sponsored-prompt" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to discover kitchen gadgets">
-                    <span>Kitchen gadget ideas? 🍳</span>
-                    <span class="sponsored-tag">Sponsored by KitchenAid</span>
-                </div>
-                <div class="sponsored-prompt" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to find beauty trends">
-                    <span>Beauty trends 2023? 💄</span>
-                    <span class="sponsored-tag">Sponsored by L'Oreal</span>
-                </div>
             </div>
             
             <!-- User message -->
             <div class="message user-message">
-                I'm looking for some summer outfit ideas
+                What's trending now?
                 <div class="message-time">10:31 AM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- Bot response with organic content first -->
+            <div class="message bot-message">
+                <div class="bot-avatar">S</div>
+                Here are some trending categories that shoppers are exploring right now:
+                <ul style="margin-top: 8px; margin-bottom: 8px;">
+                    <li>Sustainable home products</li>
+                    <li>Fitness equipment for home workouts</li>
+                    <li>Tech gadgets for productivity</li>
+                    <li>Summer fashion and accessories</li>
+                </ul>
+                Would you like more details about any of these categories?
+                <div class="message-time">10:31 AM</div>
+            </div>
+            <div class="clearfix"></div>
+            
+            <!-- User message -->
+            <div class="message user-message">
+                Tell me more about summer fashion
+                <div class="message-time">10:32 AM</div>
             </div>
             <div class="clearfix"></div>
             
@@ -76,7 +87,7 @@
             <div class="message bot-message">
                 <div class="bot-avatar">S</div>
                 Great choice! Summer is here and it's the perfect time to refresh your wardrobe. Here are some trending summer outfit ideas:
-                <div class="message-time">10:31 AM</div>
+                <div class="message-time">10:32 AM</div>
             </div>
             <div class="clearfix"></div>
             
@@ -120,18 +131,24 @@
                 </div>
             </div>
             
-            <!-- Bot continued response -->
+            <!-- Non-sponsored suggestions -->
             <div class="message bot-message">
                 <div class="bot-avatar">S</div>
-                Would you like me to suggest some complete outfit combinations or are you looking for specific items?
-                <div class="message-time">10:32 AM</div>
+                I also recommend these popular summer fashion trends:
+                <ul style="margin-top: 8px; margin-bottom: 8px;">
+                    <li>Oversized button-down shirts for beach cover-ups</li>
+                    <li>Cotton sundresses in bright colors</li>
+                    <li>Classic denim shorts with vintage styling</li>
+                    <li>Breathable sneakers for comfortable walking</li>
+                </ul>
+                <div class="message-time">10:33 AM</div>
             </div>
             <div class="clearfix"></div>
             
             <!-- User message -->
             <div class="message user-message">
                 Complete outfits would be great!
-                <div class="message-time">10:33 AM</div>
+                <div class="message-time">10:34 AM</div>
             </div>
             <div class="clearfix"></div>
             
@@ -139,7 +156,7 @@
             <div class="message bot-message">
                 <div class="bot-avatar">S</div>
                 Here are some trending summer outfit combinations that our customers love:
-                <div class="message-time">10:34 AM</div>
+                <div class="message-time">10:35 AM</div>
             </div>
             <div class="clearfix"></div>
             
